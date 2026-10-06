@@ -1,0 +1,87 @@
+generated: '2026-10-06'
+method: derived
+generator: derive-problem-types.py
+source:
+- openapi/bestprintondemand-openapi.json
+format: custom
+envelope:
+  media_type: application/json
+  schema: Error
+coverage:
+  operations: 16
+  statuses_declared: 10
+problems:
+- status: 400
+  title: Bad Request
+  description: 'Bad request. Codes: `missing_input`.'
+  operations: 9
+  media_types:
+  - application/json
+  schema: Error
+- status: 401
+  title: Unauthorized
+  description: 'No usable API key. Codes: `missing_key`, `invalid_key`, `revoked_key`.'
+  operations: 16
+  media_types:
+  - application/json
+  schema: Error
+- status: 402
+  title: Payment Required
+  description: Out of credits. Buy more, or wait for the daily free quota to reset at midnight UTC.
+  operations: 11
+  media_types:
+  - application/json
+  schema: Error
+- status: 404
+  title: Not Found
+  description: 'No endpoint at this path, or no such file job on this account. Codes: `unknown_endpoint`, `batch_not_found`.'
+  operations: 4
+  media_types:
+  - application/json
+  schema: Error
+- status: 409
+  title: Conflict
+  description: 'The file job is not in a state that allows this. `status` says what it is. Codes: `batch_not_startable`,
+    `batch_not_finished`, `batch_in_pro'
+  operations: 3
+  media_types:
+  - application/json
+  schema: Error
+- status: 410
+  title: Gone
+  description: 'The file job has no result to download any more: it failed, was cancelled, expired, or was a single-download
+    result already fetched.'
+  operations: 1
+  media_types:
+  - application/json
+  schema: Error
+- status: 413
+  title: Content Too Large
+  description: Request body too large.
+  operations: 1
+  media_types:
+  - application/json
+  schema: Error
+- status: 422
+  title: Unprocessable Content
+  description: 'Input failed validation. `errors` names the offending fields. Codes: `invalid_input`, `too_many_items`,
+    `ai_consent_required`.'
+  operations: 10
+  media_types:
+  - application/json
+  schema: Error
+- status: 429
+  title: Too Many Requests
+  description: 'Rate limit exceeded, or too many file jobs running at once. Wait `retry_after` seconds. Codes: `rate_limited`,
+    `too_many_batches`.'
+  operations: 16
+  media_types:
+  - application/json
+  schema: Error
+- status: 500
+  title: Internal Server Error
+  description: Unexpected server error. Nothing was charged. Quote `request_id` if it persists.
+  operations: 16
+  media_types:
+  - application/json
+  schema: Error

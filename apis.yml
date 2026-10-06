@@ -1,30 +1,171 @@
 aid: bestprintondemand
 name: BestPrintOnDemand
-description: 'BestPrintOnDemand is a company surfaced via the API Evangelist harvest backlog (source:
-  new-submission) and added to the network as a stub for full-pipeline profiling.'
+image: https://bestprintondemand.co/opengraph-image
+description: BestPrintOnDemand provides a live, keyless JSON API for on-demand printing services. Their API offers endpoints to list products,
+  retrieve cost estimates, and compare pricing across major POD suppliers such as Printful, Printify, and Gelato. The service includes an OpenAPI
+  3.2 specification at /openapi.json and a simple API index at /api/v1. Data is sourced with timestamps and supplier references, enabling developers
+  to integrate real-time pricing into e‑commerce platforms and custom applications.
 url: https://raw.githubusercontent.com/api-evangelist/bestprintondemand/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:new-submission
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: enrichment pass 2026-10-06 (modular-v1; was harvest)
 specificationVersion: '0.20'
 created: '2026-10-06'
 modified: '2026-10-06'
 tags:
 - Company
-apis: []
+- API
+- Print-on-Demand
+- Pricing
+- OpenAPI
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: AgenticAccess
+  url: agentic-access/bestprintondemand-agentic-access.yml
+- type: Spectral
+  url: rules/bestprintondemand-rules.yml
+- type: JSONLD
+  url: json-ld/bestprintondemand-context.jsonld
+- type: Vocabulary
+  url: vocabulary/bestprintondemand-vocabulary.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Webhooks
+  url: asyncapi/bestprintondemand-webhooks.yml
+- type: DataModel
+  url: data-model/bestprintondemand-data-model.yml
+- type: Idempotency
+  url: conventions/bestprintondemand-conventions.yml
+- type: Conventions
+  url: conventions/bestprintondemand-conventions.yml
+- type: ErrorCatalog
+  url: errors/bestprintondemand-problem-types.yml
+- type: Conformance
+  url: conformance/bestprintondemand-conformance.yml
+- type: LLMsTxt
+  url: llms/bestprintondemand-llms.txt
+- type: Hosts
+  url: hosts/bestprintondemand-hosts.yml
+- type: Vendors
+  url: vendors/bestprintondemand-vendors.yml
+- type: TermsOfService
+  url: https://bestprintondemand.co/legal/terms
+- type: PrivacyPolicy
+  url: https://bestprintondemand.co/legal/privacy
+- type: Blog
+  url: https://bestprintondemand.co/blog
+- type: APIReference
+  url: https://bestprintondemand.co/data
+- type: Authentication
+  url: authentication/bestprintondemand-authentication.yml
+- type: DomainSecurity
+  url: security/bestprintondemand-domain-security.yml
 - type: Website
   url: https://bestprintondemand.co
 - type: Documentation
   url: https://bestprintondemand.co/data#api
-x-submission-notes: 'Reconsidered by Kin 2026-10-06: now a live keyless JSON API (/api/v1: products, costs,
-  compare), OpenAPI 3.2 /openapi.json, apis.json, remote MCP /mcp (registry co.bestprintondemand/print-on-demand-costs).
-  Data: POD supplier prices (Printful/Printify/Gelato) with source+date.'
+apis:
+- aid: bestprintondemand:bestprintondemand-account-api
+  name: BestPrintOnDemand Account API
+  description: Credit balance and key status.
+  humanURL: https://bestprintondemand.co/data#api
+  baseURL: https://bestprintondemand.co/api/v1
+  tags:
+  - Account
+  properties:
+  - type: OpenAPI
+    url: openapi/bestprintondemand-account-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/bestprintondemand-countries-response-schema.json
+  - type: JSONSchema
+    url: json-schema/bestprintondemand-batch-job-schema.json
+  - type: JSONSchema
+    url: json-schema/bestprintondemand-bulk-request-schema.json
+  - type: JSONSchema
+    url: json-schema/bestprintondemand-bulk-response-schema.json
+  - type: JSONSchema
+    url: json-schema/bestprintondemand-account-response-schema.json
+  - type: JSONSchema
+    url: json-schema/bestprintondemand-single-response-schema.json
+- aid: bestprintondemand:bestprintondemand-batches-api
+  name: BestPrintOnDemand Batches API
+  description: Upload a CSV or XLSX file and download it back with gender columns added.
+  humanURL: https://bestprintondemand.co/data#api
+  baseURL: https://bestprintondemand.co/api/v1
+  tags:
+  - Batches
+  properties:
+  - type: OpenAPI
+    url: openapi/bestprintondemand-batches-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/bestprintondemand-countries-response-schema.json
+  - type: JSONSchema
+    url: json-schema/bestprintondemand-batch-job-schema.json
+  - type: JSONSchema
+    url: json-schema/bestprintondemand-bulk-request-schema.json
+  - type: JSONSchema
+    url: json-schema/bestprintondemand-bulk-response-schema.json
+  - type: JSONSchema
+    url: json-schema/bestprintondemand-account-response-schema.json
+  - type: JSONSchema
+    url: json-schema/bestprintondemand-single-response-schema.json
+- aid: bestprintondemand:bestprintondemand-gender-api
+  name: BestPrintOnDemand Gender API
+  description: Name, email and username lookups.
+  humanURL: https://bestprintondemand.co/data#api
+  baseURL: https://bestprintondemand.co/api/v1
+  tags:
+  - Gender
+  properties:
+  - type: OpenAPI
+    url: openapi/bestprintondemand-gender-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/bestprintondemand-countries-response-schema.json
+  - type: JSONSchema
+    url: json-schema/bestprintondemand-batch-job-schema.json
+  - type: JSONSchema
+    url: json-schema/bestprintondemand-bulk-request-schema.json
+  - type: JSONSchema
+    url: json-schema/bestprintondemand-bulk-response-schema.json
+  - type: JSONSchema
+    url: json-schema/bestprintondemand-account-response-schema.json
+  - type: JSONSchema
+    url: json-schema/bestprintondemand-single-response-schema.json
+- aid: bestprintondemand:bestprintondemand-webhooks-api
+  name: BestPrintOnDemand Webhooks API
+  description: Requests NameGender sends to your server when a file job finishes or credits run low.
+  humanURL: https://bestprintondemand.co/data#api
+  baseURL: https://bestprintondemand.co/api/v1
+  tags:
+  - Webhooks
+  properties:
+  - type: OpenAPI
+    url: openapi/bestprintondemand-webhooks-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/bestprintondemand-countries-response-schema.json
+  - type: JSONSchema
+    url: json-schema/bestprintondemand-batch-job-schema.json
+  - type: JSONSchema
+    url: json-schema/bestprintondemand-bulk-request-schema.json
+  - type: JSONSchema
+    url: json-schema/bestprintondemand-bulk-response-schema.json
+  - type: JSONSchema
+    url: json-schema/bestprintondemand-account-response-schema.json
+  - type: JSONSchema
+    url: json-schema/bestprintondemand-single-response-schema.json
+x-submission-notes: 'Reconsidered by Kin 2026-10-06: now a live keyless JSON API (/api/v1: products, costs, compare), OpenAPI 3.2 /openapi.json,
+  apis.json, remote MCP /mcp (registry co.bestprintondemand/print-on-demand-costs). Data: POD supplier prices (Printful/Printify/Gelato) with
+  source+date.'
 x-submission-probe: per provider reply 2026-10-06; verify on profile
 x-submitted-by: hello@bestprintondemand.co (apis.io/add, 2026-10-06)
+x-enrichment:
+  date: '2026-10-06'
+  status: enriched
+  artifacts_added: 26
+  pass: modular-v1
+  engine: identity=local,contract=local,surfaces=local,docs=local,regulatory=local

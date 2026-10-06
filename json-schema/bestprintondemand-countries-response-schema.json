@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/bestprintondemand/main/json-schema/bestprintondemand-countries-response-schema.json",
+  "title": "CountriesResponse",
+  "description": "Two lists, deliberately not merged. `registrations` is measured volume and is comparable only among countries that publish counts. `attested_in` is presence, with no weight attached — a country appears there whether or not anyone counted it.",
+  "x-generated": "2026-10-06",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/bestprintondemand-openapi.json#/components/schemas/CountriesResponse",
+  "type": "object",
+  "properties": {
+    "credits_charged": {
+      "type": "integer",
+      "description": "How many credits this call took from the balance: always 1."
+    },
+    "credits_remaining": {
+      "type": "integer",
+      "description": "Balance once this call is paid for."
+    },
+    "data_version": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Name-dataset snapshot that produced the answer."
+    },
+    "request_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Identifier of this call, also sent as the `X-Request-Id` header. Quote it in support requests."
+    },
+    "took_ms": {
+      "type": "integer",
+      "description": "Whole milliseconds spent building the distribution on our side, network time excluded."
+    },
+    "name": {
+      "type": "string",
+      "description": "The name that was looked up."
+    },
+    "basis": {
+      "type": "object",
+      "description": "What the numbers rest on. Carried in the response rather than left to the documentation, because the person reading a percentage is not reading the docs.",
+      "properties": {
+        "counted_sources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "The statistical offices that publish observation counts."
+        },
+        "counted_countries": {
+          "type": "integer",
+          "description": "Countries with counted registrations for this name, before `limit` is applied. Can be larger than the length of `registrations`."
+        },
+        "attested_countries": {
+          "type": "integer",
+          "description": "Countries in `attested_in`, which `limit` never cuts."
+        },
+        "note": {
+          "type": "string",
+          "description": "Plain-language caveat. Show it next to the percentages."
+        }
+      }
+    },
+    "registrations": {
+      "type": "array",
+      "description": "Countries with counted registrations, most first, cut to `limit`. Shares are calculated across every counted country before the cut, so they sum to 100 only when nothing is cut.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "country": {
+            "type": "string",
+            "description": "ISO 3166-1 alpha-2."
+          },
+          "count": {
+            "type": "integer",
+            "description": "Observed registrations."
+          },
+          "share": {
+            "type": "number",
+            "format": "float",
+            "description": "This country's percentage of the name's registrations across all counting countries, including any that `limit` cut from the list."
+          },
+          "gender": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Majority gender for the name in this country."
+          },
+          "probability": {
+            "type": "integer",
+            "description": "Share, 0–100, carrying that gender in this country."
+          },
+          "source": {
+            "type": "string",
+            "description": "Statistical office the count comes from."
+          }
+        }
+      }
+    },
+    "attested_in": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Every country the name occurs in, counted or not, alphabetically."
+    }
+  }
+}

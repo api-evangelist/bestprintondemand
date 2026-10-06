@@ -1,0 +1,24 @@
+generated: '2026-10-06'
+method: derived
+source: openapi/bestprintondemand-openapi.json
+summary:
+  types:
+  - apiKey
+  - http
+  api_key_in:
+  - header
+schemes:
+- name: bearerAuth
+  type: http
+  scheme: bearer
+  description: 'Recommended: `Authorization: Bearer <key>`.'
+  sources:
+  - openapi/bestprintondemand-openapi.json
+- name: apiKeyHeader
+  type: apiKey
+  in: header
+  parameter: X-Api-Key
+  description: Alternative header form, for clients that cannot set `Authorization`. Keys are
+    never read from the query string or the request body.
+  sources:
+  - openapi/bestprintondemand-openapi.json

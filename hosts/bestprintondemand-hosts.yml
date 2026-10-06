@@ -1,0 +1,47 @@
+generated: '2026-10-06'
+method: derived
+source: the pre-flight dossier, apis.yml pointers, spec servers, well-known, vendors -- nothing fetched here
+generator: derive-hosts.py
+summary:
+  hosts: 2
+  own: 2
+  other_domain: 0
+  platform: 0
+  roles:
+  - api
+  - website
+hosts:
+- host: api.bestprintondemand.co
+  found_by:
+  - contract-discovery
+  types: []
+  serves: []
+  registrable_domain: bestprintondemand.co
+  role: api
+  relation: own
+- host: bestprintondemand.co
+  found_by:
+  - pointer
+  - apis[]
+  - probed
+  - docs-index
+  - spec-found
+  - contract-discovery
+  - well-known
+  - vendor-detect
+  types:
+  - TermsOfService
+  - PrivacyPolicy
+  - Blog
+  - APIReference
+  - Website
+  - Documentation
+  serves:
+  - api
+  - docs
+  - spec
+  - hosting
+  vendor: vercel
+  registrable_domain: bestprintondemand.co
+  role: website
+  relation: own

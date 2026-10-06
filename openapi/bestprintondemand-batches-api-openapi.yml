@@ -1,0 +1,656 @@
+openapi: 3.2.0
+info:
+  title: NameGender Batches API
+  version: 1.0.0
+  summary: Infer gender from names, emails and usernames, with the evidence behind each answer.
+  description: Every lookup endpoint accepts both GET and POST so it can be called from a browser, a shell or a server.
+  contact:
+    url: https://namegender.com/docs
+servers:
+- url: https://namegender.com
+  description: Production
+security:
+- bearerAuth: []
+- apiKeyHeader: []
+tags:
+- name: Batches
+  description: Upload a CSV or XLSX file and download it back with gender columns added.
+paths:
+  /api/v1/batches:
+    post:
+      tags:
+      - Batches
+      summary: Upload a file and start processing it
+      description: 'Uploads a CSV or XLSX file (up to 100 MB, 1,000,000 rows) and, by default, queues it. One credit per row, reserved when processing begins; a job that fails is not charged.
+
+
+        `name_column` is required unless `start=false`: a guessed column that turns out to be wrong would spend credits on the wrong data. Send `start=false` to get the columns, a preview and the credit cost first, then call `/start`.
+
+
+        If starting fails (no credits, unknown column, AI consent), nothing is left behind: no job, no stored file.
+
+
+        Send an `Idempotency-Key` header to retry safely: a repeat with the same key returns the first job with `200` and `Idempotent-Replayed: true` instead of opening a second one.'
+      operationId: createBatch
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: false
+        description: Up to 80 printable ASCII characters, unique per upload. SDKs generate one for you.
+        schema:
+          type: string
+          maxLength: 80
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: CSV, TSV or XLSX with a header row.
+                start:
+                  type: boolean
+                  default: true
+                  description: 'false: upload and inspect only.'
+                name_column:
+                  type: string
+                  description: Header of the column holding the names, exactly as written in the file. Required unless `start=false`.
+                country_column:
+                  type: string
+                  description: Header of a column holding a country code per row.
+                country:
+                  type: string
+                  minLength: 2
+                  maxLength: 2
+                  description: Default country (ISO 3166-1 alpha-2) for rows without one.
+                ai_fallback:
+                  type: boolean
+                  default: false
+                  description: Ask an AI model for names not in the dataset. Requires AI consent on the account, exactly as on /gender/bulk.
+                best_guess:
+                  type: boolean
+                  default: false
+                  description: Return the more likely gender even when the evidence is weak.
+                delete_after_download:
+                  type: boolean
+                  default: false
+                  description: The result can be downloaded once, then it is deleted.
+      responses:
+        '202':
+          description: Queued (or, for a small file, possibly already finished).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchJob'
+        '201':
+          description: Uploaded, not started (`start=false`). See `inspection`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchJob'
+        '200':
+          description: Replay of an earlier request with the same `Idempotency-Key`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchJob'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '413':
+          $ref: '#/components/responses/413'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      tags:
+      - Batches
+      summary: List file jobs
+      description: Newest first. Jobs belong to the account, so this includes jobs started from the dashboard and by other keys.
+      operationId: listBatches
+      parameters:
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+      - name: page
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      responses:
+        '200':
+          description: A page of jobs.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchList'
+        '401':
+          $ref: '#/components/responses/401'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+  /api/v1/batches/{batch}:
+    get:
+      tags:
+      - Batches
+      summary: Status of a file job
+      description: Poll this until `status` is `completed`, `failed` or `cancelled`. `poll_after_seconds` suggests how long to wait between calls.
+      operationId: getBatch
+      parameters:
+      - name: batch
+        in: path
+        required: true
+        description: Job ID, as returned when the job was created (B-XXXXXXXXXX).
+        schema:
+          type: string
+          example: B-7K2M9QX4TA
+      responses:
+        '200':
+          description: The job.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchJob'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+    delete:
+      tags:
+      - Batches
+      summary: Cancel or delete a file job
+      description: A job that has not started is cancelled; any reserved credit is returned. A finished job is deleted with its files. A job being processed cannot be stopped (`409 batch_in_progress`).
+      operationId: deleteBatch
+      parameters:
+      - name: batch
+        in: path
+        required: true
+        description: Job ID, as returned when the job was created (B-XXXXXXXXXX).
+        schema:
+          type: string
+          example: B-7K2M9QX4TA
+      responses:
+        '204':
+          description: Cancelled or deleted.
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+  /api/v1/batches/{batch}/result:
+    get:
+      tags:
+      - Batches
+      summary: Download the result file
+      description: 'The uploaded file with these columns appended: `gender`, `probability`, `sample_size`, `country`, `source`, `matched_as`, `first_name`, `middle_name`, `last_name`, `name_type`. Same format as the upload.'
+      operationId: downloadBatchResult
+      parameters:
+      - name: batch
+        in: path
+        required: true
+        description: Job ID, as returned when the job was created (B-XXXXXXXXXX).
+        schema:
+          type: string
+          example: B-7K2M9QX4TA
+      responses:
+        '200':
+          description: The result file.
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '410':
+          $ref: '#/components/responses/410'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+  /api/v1/batches/{batch}/start:
+    post:
+      tags:
+      - Batches
+      summary: Start a job uploaded with start=false
+      operationId: startBatch
+      parameters:
+      - name: batch
+        in: path
+        required: true
+        description: Job ID, as returned when the job was created (B-XXXXXXXXXX).
+        schema:
+          type: string
+          example: B-7K2M9QX4TA
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name_column
+              properties:
+                name_column:
+                  type: string
+                  description: Header of the column holding the names, exactly as written in the file.
+                country_column:
+                  type: string
+                  description: Header of a column holding a country code per row.
+                country:
+                  type: string
+                  minLength: 2
+                  maxLength: 2
+                  description: Default country (ISO 3166-1 alpha-2) for rows without one.
+                ai_fallback:
+                  type: boolean
+                  default: false
+                  description: Ask an AI model for names not in the dataset. Requires AI consent on the account, exactly as on /gender/bulk.
+                best_guess:
+                  type: boolean
+                  default: false
+                  description: Return the more likely gender even when the evidence is weak.
+                delete_after_download:
+                  type: boolean
+                  default: false
+                  description: The result can be downloaded once, then it is deleted.
+      responses:
+        '202':
+          description: Queued.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchJob'
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+components:
+  responses:
+    '500':
+      description: Unexpected server error. Nothing was charged. Quote `request_id` if it persists.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    '413':
+      description: Request body too large.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    '410':
+      description: 'The file job has no result to download any more: it failed, was cancelled, expired, or was a single-download result already fetched.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    '400':
+      description: 'Bad request. Codes: `missing_input`.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    '401':
+      description: 'No usable API key. Codes: `missing_key`, `invalid_key`, `revoked_key`.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    '409':
+      description: 'The file job is not in a state that allows this. `status` says what it is. Codes: `batch_not_startable`, `batch_not_finished`, `batch_in_progress`.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    '422':
+      description: 'Input failed validation. `errors` names the offending fields. Codes: `invalid_input`, `too_many_items`, `ai_consent_required`.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    '404':
+      description: 'No endpoint at this path, or no such file job on this account. Codes: `unknown_endpoint`, `batch_not_found`.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    '402':
+      description: Out of credits. Buy more, or wait for the daily free quota to reset at midnight UTC.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    '429':
+      description: 'Rate limit exceeded, or too many file jobs running at once. Wait `retry_after` seconds. Codes: `rate_limited`, `too_many_batches`.'
+      headers:
+        Retry-After:
+          schema:
+            type: integer
+          description: Seconds to wait.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      description: The one error shape. Returned by every endpoint at every failing status code.
+      required:
+      - error
+      - message
+      - docs
+      properties:
+        error:
+          type: string
+          description: Machine-readable and stable. **Branch on this.** New codes may be added over time, so treat an unrecognised value as a generic failure rather than crashing.
+          enum:
+          - missing_key
+          - invalid_key
+          - revoked_key
+          - blocked
+          - email_not_verified
+          - ip_not_allowed
+          - proxy_secret_required
+          - forbidden
+          - no_credits
+          - missing_input
+          - invalid_input
+          - too_many_items
+          - ai_consent_required
+          - unknown_endpoint
+          - method_not_allowed
+          - payload_too_large
+          - rate_limited
+          - batch_not_found
+          - batch_not_startable
+          - batch_not_finished
+          - batch_in_progress
+          - result_gone
+          - too_many_batches
+          - not_ready
+          - server_error
+        message:
+          type: string
+          description: Human-readable, translated into the caller's language. Wording can change; never parse or compare it.
+        request_id:
+          type:
+          - string
+          - 'null'
+          description: Quote this in support requests.
+          example: req_9c1f5b2a7e0d4a13
+        docs:
+          type: string
+          format: uri
+          description: Link to this error in the documentation.
+        errors:
+          type: object
+          description: Field-level detail. Present on validation failures only.
+          additionalProperties:
+            type: array
+            items:
+              type: string
+        retry_after:
+          type: integer
+          description: Seconds to wait. Present on 429 only, and mirrored in the `Retry-After` header.
+    BatchList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchJob'
+        page:
+          type: integer
+        per_page:
+          type: integer
+        total:
+          type: integer
+        has_more:
+          type: boolean
+    BatchJob:
+      type: object
+      properties:
+        id:
+          type: string
+          example: B-7K2M9QX4TA
+        status:
+          type: string
+          enum:
+          - uploaded
+          - queued
+          - processing
+          - completed
+          - failed
+          - cancelled
+        source:
+          type: string
+          enum:
+          - api
+          - panel
+        file:
+          type: object
+          properties:
+            name:
+              type: string
+            format:
+              type: string
+              enum:
+              - csv
+              - xlsx
+        columns:
+          type: object
+          properties:
+            name:
+              type:
+              - string
+              - 'null'
+            country:
+              type:
+              - string
+              - 'null'
+        options:
+          type: object
+          properties:
+            country:
+              type:
+              - string
+              - 'null'
+            ai_fallback:
+              type: boolean
+            best_guess:
+              type: boolean
+            delete_after_download:
+              type: boolean
+        rows:
+          type: object
+          properties:
+            total:
+              type: integer
+            processed:
+              type: integer
+            identified:
+              type:
+              - integer
+              - 'null'
+              description: Rows given a gender. Set once completed.
+        progress:
+          type: integer
+          minimum: 0
+          maximum: 100
+        credits:
+          type: object
+          properties:
+            reserved:
+              type:
+              - integer
+              - 'null'
+              description: Held from the balance when processing began.
+            charged:
+              type:
+              - integer
+              - 'null'
+              description: Final charge. Null until completed; a failed job is not charged.
+        summary:
+          type:
+          - object
+          - 'null'
+          properties:
+            male:
+              type: integer
+            female:
+              type: integer
+            unknown:
+              type: integer
+            from_llm:
+              type: integer
+        data_version:
+          type:
+          - string
+          - 'null'
+        error:
+          type:
+          - object
+          - 'null'
+          description: Set when `status` is `failed`. Branch on `code`.
+          properties:
+            code:
+              type: string
+              enum:
+              - source_missing
+              - no_columns
+              - name_column_missing
+              - empty_file
+              - bad_format
+              - unreadable
+              - no_credits
+              - processing_error
+              - stalled
+            message:
+              type: string
+        result:
+          type:
+          - object
+          - 'null'
+          properties:
+            url:
+              type: string
+              format: uri
+            format:
+              type: string
+              enum:
+              - csv
+              - xlsx
+            expires_at:
+              type:
+              - string
+              - 'null'
+              format: date-time
+        inspection:
+          type:
+          - object
+          - 'null'
+          description: Only while `status` is `uploaded`.
+          properties:
+            columns:
+              type: array
+              items:
+                type: string
+            preview:
+              type: array
+              items:
+                type: array
+                items:
+                  type: string
+            guessed_name_column:
+              type:
+              - string
+              - 'null'
+            guessed_country_column:
+              type:
+              - string
+              - 'null'
+            credits_needed:
+              type: integer
+            credits_available:
+              type: integer
+        poll_after_seconds:
+          type:
+          - integer
+          - 'null'
+        created_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        started_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        finished_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        expires_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Recommended: `Authorization: Bearer <key>`.'
+    apiKeyHeader:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+      description: Alternative header form, for clients that cannot set `Authorization`. Keys are never read from the query string or the request body.

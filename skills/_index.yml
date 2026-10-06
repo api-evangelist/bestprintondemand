@@ -1,0 +1,13 @@
+generated: '2026-10-06'
+method: generated
+generator: extract-docs-artifacts.py skills (local)
+source: openapi/bestprintondemand-openapi.json
+skills:
+- file: skills/bestprintondemand-process-batch.md
+  name: bestprintondemand-process-batch
+  api: openapi/bestprintondemand-openapi.json
+  operations:
+  - createBatch
+  - startBatch
+  - getBatch
+  - downloadBatchResult

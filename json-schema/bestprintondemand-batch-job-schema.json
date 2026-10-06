@@ -1,0 +1,281 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/bestprintondemand/main/json-schema/bestprintondemand-batch-job-schema.json",
+  "title": "BatchJob",
+  "x-generated": "2026-10-06",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/bestprintondemand-openapi.json#/components/schemas/BatchJob",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "uploaded",
+        "queued",
+        "processing",
+        "completed",
+        "failed",
+        "cancelled"
+      ]
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "api",
+        "panel"
+      ]
+    },
+    "file": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "format": {
+          "type": "string",
+          "enum": [
+            "csv",
+            "xlsx"
+          ]
+        }
+      }
+    },
+    "columns": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "country": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "options": {
+      "type": "object",
+      "properties": {
+        "country": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ai_fallback": {
+          "type": "boolean"
+        },
+        "best_guess": {
+          "type": "boolean"
+        },
+        "delete_after_download": {
+          "type": "boolean"
+        }
+      }
+    },
+    "rows": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer"
+        },
+        "processed": {
+          "type": "integer"
+        },
+        "identified": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Rows given a gender. Set once completed."
+        }
+      }
+    },
+    "progress": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "credits": {
+      "type": "object",
+      "properties": {
+        "reserved": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Held from the balance when processing began."
+        },
+        "charged": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Final charge. Null until completed; a failed job is not charged."
+        }
+      }
+    },
+    "summary": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "male": {
+          "type": "integer"
+        },
+        "female": {
+          "type": "integer"
+        },
+        "unknown": {
+          "type": "integer"
+        },
+        "from_llm": {
+          "type": "integer"
+        }
+      }
+    },
+    "data_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "error": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Set when `status` is `failed`. Branch on `code`.",
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "source_missing",
+            "no_columns",
+            "name_column_missing",
+            "empty_file",
+            "bad_format",
+            "unreadable",
+            "no_credits",
+            "processing_error",
+            "stalled"
+          ]
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "result": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "format": {
+          "type": "string",
+          "enum": [
+            "csv",
+            "xlsx"
+          ]
+        },
+        "expires_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+    "inspection": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Only while `status` is `uploaded`.",
+      "properties": {
+        "columns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "preview": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "guessed_name_column": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "guessed_country_column": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "credits_needed": {
+          "type": "integer"
+        },
+        "credits_available": {
+          "type": "integer"
+        }
+      }
+    },
+    "poll_after_seconds": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "created_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "started_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "finished_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  }
+}

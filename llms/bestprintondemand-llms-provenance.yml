@@ -1,0 +1,6 @@
+generated: '2026-10-06'
+method: probed
+generator: harvest-llms.py
+source: https://bestprintondemand.co/llms.txt
+bytes: 7213
+note: saved verbatim; the provider's own document

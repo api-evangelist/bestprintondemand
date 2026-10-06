@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/bestprintondemand/main/json-schema/bestprintondemand-account-response-schema.json",
+  "title": "AccountResponse",
+  "x-generated": "2026-10-06",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/bestprintondemand-openapi.json#/components/schemas/AccountResponse",
+  "type": "object",
+  "properties": {
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "Account email address."
+    },
+    "credits_remaining": {
+      "type": "integer",
+      "description": "Purchased credits plus whatever is left of today's free quota."
+    },
+    "purchased_credits": {
+      "type": "integer",
+      "description": "Paid balance. Credits stay on your balance until you spend them."
+    },
+    "free_today": {
+      "type": "integer",
+      "description": "Free credits left today. Resets at midnight UTC."
+    },
+    "free_daily_limit": {
+      "type": "integer",
+      "description": "Free credits granted per day."
+    },
+    "lifetime_requests": {
+      "type": "integer",
+      "description": "Requests made with this account so far."
+    },
+    "data_version": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Current name-dataset snapshot."
+    }
+  }
+}

@@ -1,0 +1,277 @@
+{
+  "@context": {
+    "@vocab": "https://bestprintondemand.co/schema#",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "bestprintondemand": "https://bestprintondemand.co/schema#",
+    "Error": "bestprintondemand:Error",
+    "error": {
+      "@id": "bestprintondemand:error",
+      "@type": "xsd:string"
+    },
+    "message": {
+      "@id": "bestprintondemand:message",
+      "@type": "xsd:string"
+    },
+    "request_id": {
+      "@id": "bestprintondemand:request_id",
+      "@type": "xsd:string"
+    },
+    "docs": {
+      "@id": "bestprintondemand:docs",
+      "@type": "@id"
+    },
+    "errors": {
+      "@id": "bestprintondemand:errors"
+    },
+    "retry_after": {
+      "@id": "bestprintondemand:retry_after",
+      "@type": "xsd:integer"
+    },
+    "GenderResult": "bestprintondemand:GenderResult",
+    "query": {
+      "@id": "bestprintondemand:query",
+      "@type": "xsd:string"
+    },
+    "name": {
+      "@id": "bestprintondemand:name",
+      "@type": "xsd:string"
+    },
+    "first_name": {
+      "@id": "bestprintondemand:first_name",
+      "@type": "xsd:string"
+    },
+    "middle_name": {
+      "@id": "bestprintondemand:middle_name",
+      "@type": "xsd:string"
+    },
+    "last_name": {
+      "@id": "bestprintondemand:last_name",
+      "@type": "xsd:string"
+    },
+    "name_type": {
+      "@id": "bestprintondemand:name_type",
+      "@type": "xsd:string"
+    },
+    "gender": {
+      "@id": "bestprintondemand:gender",
+      "@type": "xsd:string"
+    },
+    "probability": {
+      "@id": "bestprintondemand:probability",
+      "@type": "xsd:integer"
+    },
+    "sample_size": {
+      "@id": "bestprintondemand:sample_size",
+      "@type": "xsd:integer"
+    },
+    "country": {
+      "@id": "bestprintondemand:country",
+      "@type": "xsd:string"
+    },
+    "took_ms": {
+      "@id": "bestprintondemand:took_ms",
+      "@type": "xsd:integer"
+    },
+    "source": {
+      "@id": "bestprintondemand:source",
+      "@type": "xsd:string"
+    },
+    "confidence": {
+      "@id": "bestprintondemand:confidence",
+      "@type": "xsd:string"
+    },
+    "matched_as": {
+      "@id": "bestprintondemand:matched_as",
+      "@type": "xsd:string"
+    },
+    "Envelope": "bestprintondemand:Envelope",
+    "credits_charged": {
+      "@id": "bestprintondemand:credits_charged",
+      "@type": "xsd:integer"
+    },
+    "credits_remaining": {
+      "@id": "bestprintondemand:credits_remaining",
+      "@type": "xsd:integer"
+    },
+    "data_version": {
+      "@id": "bestprintondemand:data_version",
+      "@type": "xsd:string"
+    },
+    "BulkRequest": "bestprintondemand:BulkRequest",
+    "names": {
+      "@id": "bestprintondemand:names",
+      "@container": "@list"
+    },
+    "locale": {
+      "@id": "bestprintondemand:locale",
+      "@type": "xsd:string"
+    },
+    "ip": {
+      "@id": "bestprintondemand:ip",
+      "@type": "xsd:string"
+    },
+    "type": {
+      "@id": "bestprintondemand:type",
+      "@type": "xsd:string"
+    },
+    "ai_fallback": {
+      "@id": "bestprintondemand:ai_fallback",
+      "@type": "xsd:boolean"
+    },
+    "best_guess": {
+      "@id": "bestprintondemand:best_guess",
+      "@type": "xsd:boolean"
+    },
+    "CountriesResponse": "bestprintondemand:CountriesResponse",
+    "basis": {
+      "@id": "bestprintondemand:basis"
+    },
+    "registrations": {
+      "@id": "bestprintondemand:registrations",
+      "@container": "@list"
+    },
+    "attested_in": {
+      "@id": "bestprintondemand:attested_in",
+      "@container": "@list"
+    },
+    "AccountResponse": "bestprintondemand:AccountResponse",
+    "email": {
+      "@id": "bestprintondemand:email",
+      "@type": "xsd:string"
+    },
+    "purchased_credits": {
+      "@id": "bestprintondemand:purchased_credits",
+      "@type": "xsd:integer"
+    },
+    "free_today": {
+      "@id": "bestprintondemand:free_today",
+      "@type": "xsd:integer"
+    },
+    "free_daily_limit": {
+      "@id": "bestprintondemand:free_daily_limit",
+      "@type": "xsd:integer"
+    },
+    "lifetime_requests": {
+      "@id": "bestprintondemand:lifetime_requests",
+      "@type": "xsd:integer"
+    },
+    "BatchJob": "bestprintondemand:BatchJob",
+    "id": {
+      "@id": "bestprintondemand:id",
+      "@type": "xsd:string"
+    },
+    "status": {
+      "@id": "bestprintondemand:status",
+      "@type": "xsd:string"
+    },
+    "file": {
+      "@id": "bestprintondemand:file"
+    },
+    "columns": {
+      "@id": "bestprintondemand:columns"
+    },
+    "options": {
+      "@id": "bestprintondemand:options"
+    },
+    "rows": {
+      "@id": "bestprintondemand:rows"
+    },
+    "progress": {
+      "@id": "bestprintondemand:progress",
+      "@type": "xsd:integer"
+    },
+    "credits": {
+      "@id": "bestprintondemand:credits"
+    },
+    "summary": {
+      "@id": "bestprintondemand:summary"
+    },
+    "result": {
+      "@id": "bestprintondemand:result"
+    },
+    "inspection": {
+      "@id": "bestprintondemand:inspection"
+    },
+    "poll_after_seconds": {
+      "@id": "bestprintondemand:poll_after_seconds",
+      "@type": "xsd:integer"
+    },
+    "created_at": {
+      "@id": "bestprintondemand:created_at",
+      "@type": "xsd:dateTime"
+    },
+    "started_at": {
+      "@id": "bestprintondemand:started_at",
+      "@type": "xsd:dateTime"
+    },
+    "finished_at": {
+      "@id": "bestprintondemand:finished_at",
+      "@type": "xsd:dateTime"
+    },
+    "expires_at": {
+      "@id": "bestprintondemand:expires_at",
+      "@type": "xsd:dateTime"
+    },
+    "BatchList": "bestprintondemand:BatchList",
+    "data": {
+      "@id": "bestprintondemand:data",
+      "@container": "@list"
+    },
+    "page": {
+      "@id": "bestprintondemand:page",
+      "@type": "xsd:integer"
+    },
+    "per_page": {
+      "@id": "bestprintondemand:per_page",
+      "@type": "xsd:integer"
+    },
+    "total": {
+      "@id": "bestprintondemand:total",
+      "@type": "xsd:integer"
+    },
+    "has_more": {
+      "@id": "bestprintondemand:has_more",
+      "@type": "xsd:boolean"
+    },
+    "WebhookEvent": "bestprintondemand:WebhookEvent",
+    "api_version": {
+      "@id": "bestprintondemand:api_version",
+      "@type": "xsd:string"
+    },
+    "CreditsAlert": "bestprintondemand:CreditsAlert",
+    "kind": {
+      "@id": "bestprintondemand:kind",
+      "@type": "xsd:string"
+    },
+    "purchased": {
+      "@id": "bestprintondemand:purchased",
+      "@type": "xsd:integer"
+    },
+    "subscription": {
+      "@id": "bestprintondemand:subscription",
+      "@type": "xsd:integer"
+    },
+    "daily_burn": {
+      "@id": "bestprintondemand:daily_burn",
+      "@type": "xsd:integer"
+    },
+    "runway_days": {
+      "@id": "bestprintondemand:runway_days",
+      "@type": "xsd:integer"
+    },
+    "since": {
+      "@id": "bestprintondemand:since",
+      "@type": "xsd:dateTime"
+    },
+    "WebhookTestObject": "bestprintondemand:WebhookTestObject"
+  },
+  "@type": "schema:Dataset",
+  "schema:name": "BestPrintOnDemand API JSON-LD context",
+  "schema:description": "A JSON-LD @context for the objects BestPrintOnDemand's own API contract declares: one class per component schema, one property per declared field, typed from the contract. Derived by script (derive-json-ld.py, 2026-10-06) from openapi/bestprintondemand-openapi.json.",
+  "dcterms:created": "2026-10-06",
+  "dcterms:source": [
+    "openapi/bestprintondemand-openapi.json"
+  ]
+}

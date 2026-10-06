@@ -1,0 +1,546 @@
+openapi: 3.2.0
+info:
+  title: NameGender Webhooks API
+  version: 1.0.0
+  summary: Infer gender from names, emails and usernames, with the evidence behind each answer.
+  description: Every lookup endpoint accepts both GET and POST so it can be called from a browser, a shell or a server.
+  contact:
+    url: https://namegender.com/docs
+servers:
+- url: https://namegender.com
+  description: Production
+security:
+- bearerAuth: []
+- apiKeyHeader: []
+tags:
+- name: Webhooks
+  description: Requests NameGender sends to your server when a file job finishes or credits run low.
+paths: {}
+webhooks:
+  batch.completed:
+    post:
+      tags:
+      - Webhooks
+      summary: A file job completed
+      description: '`data.object` is the job, exactly as `GET /api/v1/batches/{id}` returns it. `result.url` needs your API key to download.
+
+
+        Answer with any 2xx within 10 seconds, then do the work. Anything else (including a redirect) is retried after 1 min, 5 min, 30 min, 2 h, 6 h, 12 h, 24 h; after 8 attempts the event is given up. Order is not guaranteed.'
+      operationId: webhookBatchCompleted
+      parameters:
+      - name: NameGender-Signature
+        in: header
+        required: true
+        description: '`t=<unix seconds>,v1=<hex>`. `v1` is HMAC-SHA256 of `"<t>.<raw body>"` with the endpoint secret. During a secret rotation a second `v1` is present for 24 hours; accept the request if any `v1` matches. Reject a `t` more than 5 minutes from your clock.'
+        schema:
+          type: string
+          example: t=1727172264,v1=857fcddfea47617c448b7a8e6537bbd59c9922a37c5273b2709812fbadb29e50
+      - name: NameGender-Event-Id
+        in: header
+        required: true
+        description: Same as `id` in the body, and the same on every retry. Deduplicate on it.
+        schema:
+          type: string
+          example: evt_16f7c01502fda5436e8b7c4e
+      - name: NameGender-Delivery-Attempt
+        in: header
+        required: true
+        description: 1 on the first try, then 2, 3… up to 8.
+        schema:
+          type: integer
+          minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/WebhookEvent'
+              - type: object
+                properties:
+                  type:
+                    const: batch.completed
+                  data:
+                    type: object
+                    properties:
+                      object:
+                        $ref: '#/components/schemas/BatchJob'
+      responses:
+        2XX:
+          description: Received. Any 2xx status counts; the body is ignored.
+  batch.failed:
+    post:
+      tags:
+      - Webhooks
+      summary: A file job failed
+      description: '`data.object` is the job with `status: failed`; branch on `error.code`. A failed job is not charged.
+
+
+        Answer with any 2xx within 10 seconds, then do the work. Anything else (including a redirect) is retried after 1 min, 5 min, 30 min, 2 h, 6 h, 12 h, 24 h; after 8 attempts the event is given up. Order is not guaranteed.'
+      operationId: webhookBatchFailed
+      parameters:
+      - name: NameGender-Signature
+        in: header
+        required: true
+        description: '`t=<unix seconds>,v1=<hex>`. `v1` is HMAC-SHA256 of `"<t>.<raw body>"` with the endpoint secret. During a secret rotation a second `v1` is present for 24 hours; accept the request if any `v1` matches. Reject a `t` more than 5 minutes from your clock.'
+        schema:
+          type: string
+          example: t=1727172264,v1=857fcddfea47617c448b7a8e6537bbd59c9922a37c5273b2709812fbadb29e50
+      - name: NameGender-Event-Id
+        in: header
+        required: true
+        description: Same as `id` in the body, and the same on every retry. Deduplicate on it.
+        schema:
+          type: string
+          example: evt_16f7c01502fda5436e8b7c4e
+      - name: NameGender-Delivery-Attempt
+        in: header
+        required: true
+        description: 1 on the first try, then 2, 3… up to 8.
+        schema:
+          type: integer
+          minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/WebhookEvent'
+              - type: object
+                properties:
+                  type:
+                    const: batch.failed
+                  data:
+                    type: object
+                    properties:
+                      object:
+                        $ref: '#/components/schemas/BatchJob'
+      responses:
+        2XX:
+          description: Received. Any 2xx status counts; the body is ignored.
+  credits.low:
+    post:
+      tags:
+      - Webhooks
+      summary: Credits will run out within a week
+      description: 'Sent once when the balance, at the average paid usage of the last 14 days, will last 7 days or less. Subscription credits and an upcoming renewal are taken into account. Checked hourly, so it can arrive up to an hour after the threshold is crossed; for an exact balance use `credits_remaining` on any API response.
+
+
+        Answer with any 2xx within 10 seconds, then do the work. Anything else (including a redirect) is retried after 1 min, 5 min, 30 min, 2 h, 6 h, 12 h, 24 h; after 8 attempts the event is given up. Order is not guaranteed.'
+      operationId: webhookCreditsLow
+      parameters:
+      - name: NameGender-Signature
+        in: header
+        required: true
+        description: '`t=<unix seconds>,v1=<hex>`. `v1` is HMAC-SHA256 of `"<t>.<raw body>"` with the endpoint secret. During a secret rotation a second `v1` is present for 24 hours; accept the request if any `v1` matches. Reject a `t` more than 5 minutes from your clock.'
+        schema:
+          type: string
+          example: t=1727172264,v1=857fcddfea47617c448b7a8e6537bbd59c9922a37c5273b2709812fbadb29e50
+      - name: NameGender-Event-Id
+        in: header
+        required: true
+        description: Same as `id` in the body, and the same on every retry. Deduplicate on it.
+        schema:
+          type: string
+          example: evt_16f7c01502fda5436e8b7c4e
+      - name: NameGender-Delivery-Attempt
+        in: header
+        required: true
+        description: 1 on the first try, then 2, 3… up to 8.
+        schema:
+          type: integer
+          minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/WebhookEvent'
+              - type: object
+                properties:
+                  type:
+                    const: credits.low
+                  data:
+                    type: object
+                    properties:
+                      object:
+                        $ref: '#/components/schemas/CreditsAlert'
+      responses:
+        2XX:
+          description: Received. Any 2xx status counts; the body is ignored.
+  credits.depleted:
+    post:
+      tags:
+      - Webhooks
+      summary: Credits ran out
+      description: 'Sent once when the balance reaches zero and requests are being refused with `402 no_credits`. Checked hourly.
+
+
+        Answer with any 2xx within 10 seconds, then do the work. Anything else (including a redirect) is retried after 1 min, 5 min, 30 min, 2 h, 6 h, 12 h, 24 h; after 8 attempts the event is given up. Order is not guaranteed.'
+      operationId: webhookCreditsDepleted
+      parameters:
+      - name: NameGender-Signature
+        in: header
+        required: true
+        description: '`t=<unix seconds>,v1=<hex>`. `v1` is HMAC-SHA256 of `"<t>.<raw body>"` with the endpoint secret. During a secret rotation a second `v1` is present for 24 hours; accept the request if any `v1` matches. Reject a `t` more than 5 minutes from your clock.'
+        schema:
+          type: string
+          example: t=1727172264,v1=857fcddfea47617c448b7a8e6537bbd59c9922a37c5273b2709812fbadb29e50
+      - name: NameGender-Event-Id
+        in: header
+        required: true
+        description: Same as `id` in the body, and the same on every retry. Deduplicate on it.
+        schema:
+          type: string
+          example: evt_16f7c01502fda5436e8b7c4e
+      - name: NameGender-Delivery-Attempt
+        in: header
+        required: true
+        description: 1 on the first try, then 2, 3… up to 8.
+        schema:
+          type: integer
+          minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/WebhookEvent'
+              - type: object
+                properties:
+                  type:
+                    const: credits.depleted
+                  data:
+                    type: object
+                    properties:
+                      object:
+                        $ref: '#/components/schemas/CreditsAlert'
+      responses:
+        2XX:
+          description: Received. Any 2xx status counts; the body is ignored.
+  webhook.test:
+    post:
+      tags:
+      - Webhooks
+      summary: Test event from the dashboard
+      description: 'Sent only by "Send test event" in the dashboard, only to that endpoint.
+
+
+        Answer with any 2xx within 10 seconds, then do the work. Anything else (including a redirect) is retried after 1 min, 5 min, 30 min, 2 h, 6 h, 12 h, 24 h; after 8 attempts the event is given up. Order is not guaranteed.'
+      operationId: webhookWebhookTest
+      parameters:
+      - name: NameGender-Signature
+        in: header
+        required: true
+        description: '`t=<unix seconds>,v1=<hex>`. `v1` is HMAC-SHA256 of `"<t>.<raw body>"` with the endpoint secret. During a secret rotation a second `v1` is present for 24 hours; accept the request if any `v1` matches. Reject a `t` more than 5 minutes from your clock.'
+        schema:
+          type: string
+          example: t=1727172264,v1=857fcddfea47617c448b7a8e6537bbd59c9922a37c5273b2709812fbadb29e50
+      - name: NameGender-Event-Id
+        in: header
+        required: true
+        description: Same as `id` in the body, and the same on every retry. Deduplicate on it.
+        schema:
+          type: string
+          example: evt_16f7c01502fda5436e8b7c4e
+      - name: NameGender-Delivery-Attempt
+        in: header
+        required: true
+        description: 1 on the first try, then 2, 3… up to 8.
+        schema:
+          type: integer
+          minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/WebhookEvent'
+              - type: object
+                properties:
+                  type:
+                    const: webhook.test
+                  data:
+                    type: object
+                    properties:
+                      object:
+                        $ref: '#/components/schemas/WebhookTestObject'
+      responses:
+        2XX:
+          description: Received. Any 2xx status counts; the body is ignored.
+components:
+  schemas:
+    BatchJob:
+      type: object
+      properties:
+        id:
+          type: string
+          example: B-7K2M9QX4TA
+        status:
+          type: string
+          enum:
+          - uploaded
+          - queued
+          - processing
+          - completed
+          - failed
+          - cancelled
+        source:
+          type: string
+          enum:
+          - api
+          - panel
+        file:
+          type: object
+          properties:
+            name:
+              type: string
+            format:
+              type: string
+              enum:
+              - csv
+              - xlsx
+        columns:
+          type: object
+          properties:
+            name:
+              type:
+              - string
+              - 'null'
+            country:
+              type:
+              - string
+              - 'null'
+        options:
+          type: object
+          properties:
+            country:
+              type:
+              - string
+              - 'null'
+            ai_fallback:
+              type: boolean
+            best_guess:
+              type: boolean
+            delete_after_download:
+              type: boolean
+        rows:
+          type: object
+          properties:
+            total:
+              type: integer
+            processed:
+              type: integer
+            identified:
+              type:
+              - integer
+              - 'null'
+              description: Rows given a gender. Set once completed.
+        progress:
+          type: integer
+          minimum: 0
+          maximum: 100
+        credits:
+          type: object
+          properties:
+            reserved:
+              type:
+              - integer
+              - 'null'
+              description: Held from the balance when processing began.
+            charged:
+              type:
+              - integer
+              - 'null'
+              description: Final charge. Null until completed; a failed job is not charged.
+        summary:
+          type:
+          - object
+          - 'null'
+          properties:
+            male:
+              type: integer
+            female:
+              type: integer
+            unknown:
+              type: integer
+            from_llm:
+              type: integer
+        data_version:
+          type:
+          - string
+          - 'null'
+        error:
+          type:
+          - object
+          - 'null'
+          description: Set when `status` is `failed`. Branch on `code`.
+          properties:
+            code:
+              type: string
+              enum:
+              - source_missing
+              - no_columns
+              - name_column_missing
+              - empty_file
+              - bad_format
+              - unreadable
+              - no_credits
+              - processing_error
+              - stalled
+            message:
+              type: string
+        result:
+          type:
+          - object
+          - 'null'
+          properties:
+            url:
+              type: string
+              format: uri
+            format:
+              type: string
+              enum:
+              - csv
+              - xlsx
+            expires_at:
+              type:
+              - string
+              - 'null'
+              format: date-time
+        inspection:
+          type:
+          - object
+          - 'null'
+          description: Only while `status` is `uploaded`.
+          properties:
+            columns:
+              type: array
+              items:
+                type: string
+            preview:
+              type: array
+              items:
+                type: array
+                items:
+                  type: string
+            guessed_name_column:
+              type:
+              - string
+              - 'null'
+            guessed_country_column:
+              type:
+              - string
+              - 'null'
+            credits_needed:
+              type: integer
+            credits_available:
+              type: integer
+        poll_after_seconds:
+          type:
+          - integer
+          - 'null'
+        created_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        started_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        finished_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        expires_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+    WebhookTestObject:
+      type: object
+      properties:
+        message:
+          type: string
+    WebhookEvent:
+      type: object
+      description: Envelope of every webhook request. The raw body is what the signature covers.
+      required:
+      - id
+      - type
+      - created_at
+      - api_version
+      - data
+      properties:
+        id:
+          type: string
+          description: Event id; stable across retries.
+          example: evt_16f7c01502fda5436e8b7c4e
+        type:
+          type: string
+          description: New types can be added. Answer 2xx to a type you do not recognise and ignore it.
+          enum:
+          - batch.completed
+          - batch.failed
+          - credits.low
+          - credits.depleted
+          - webhook.test
+        created_at:
+          type: string
+          format: date-time
+        api_version:
+          type: string
+          const: v1
+        data:
+          type: object
+          properties:
+            object:
+              type: object
+    CreditsAlert:
+      type: object
+      required:
+      - kind
+      - credits_remaining
+      - since
+      properties:
+        kind:
+          type: string
+          enum:
+          - credits_low
+          - credits_out
+        credits_remaining:
+          type: integer
+          description: 'Same as `credits_remaining` on `/api/v1/me`: purchased, subscription and today''s free credits together.'
+        purchased:
+          type: integer
+          description: Purchased credits. They stay on the balance until spent.
+        subscription:
+          type: integer
+          description: Subscription credits left in the current period.
+        daily_burn:
+          type: integer
+          description: Average credits used per day over the last 14 days.
+        runway_days:
+          type: integer
+          description: Days the balance lasts at that rate. `credits.low` only.
+        since:
+          type: string
+          format: date-time
+          description: When the condition was first seen.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Recommended: `Authorization: Bearer <key>`.'
+    apiKeyHeader:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+      description: Alternative header form, for clients that cannot set `Authorization`. Keys are never read from the query string or the request body.
