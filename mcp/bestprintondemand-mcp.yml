@@ -1,8 +1,31 @@
-{
-  "generated": "2026-10-06",
-  "method": "none",
-  "deployment": {
-    "mode": "none",
-    "verified": "derived"
-  }
-}
+generated: '2026-10-12'
+method: probed
+source: https://bestprintondemand.co/mcp
+status: live
+description: BestPrintOnDemand serves a remote Model Context Protocol server (Streamable HTTP) on its own host, listed in the official MCP Registry
+  as co.bestprintondemand/print-on-demand-costs. No key or account; it answers the same four questions as the REST API (find products, a product's
+  costs, compare suppliers, price changes).
+servers:
+- name: print-on-demand-costs
+  url: https://bestprintondemand.co/mcp
+  transport: streamable-http
+  auth: none
+  anonymous_probe:
+    request: '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+    http_status: 200
+    note: returned the tool list without credentials (2026-10-12); GET returns 405
+  humanURL: https://bestprintondemand.co/data#mcp
+deployment:
+  mode: remote
+  endpoint: https://bestprintondemand.co/mcp
+  auth: none
+  verified: probed
+tools:
+- name: find_products
+  title: Find print-on-demand products
+- name: get_product_costs
+  title: Get a product's costs by supplier
+- name: compare_suppliers
+  title: Compare two print-on-demand suppliers
+- name: get_price_changes
+  title: Get print-on-demand price changes

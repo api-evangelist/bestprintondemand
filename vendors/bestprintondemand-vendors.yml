@@ -1,4 +1,4 @@
-generated: '2026-10-06'
+generated: '2026-10-12'
 method: probed
 source: pre-flight dossier (docs platform, portal detections) + CNAME chains and response headers of the hosts apis.yml names
 registry: all/0-working/vendors.yml
@@ -20,9 +20,9 @@ vendors:
   name: Vercel
   area: hosting
   host: bestprintondemand.co
-  evidence: 'cname:'
-  signal: docs-platform
-  confidence: medium
+  evidence: header:x-vercel-id
+  signal: header
+  confidence: high
   kin_score: []
 reliance:
   areas_vendor_served:
@@ -33,8 +33,9 @@ reliance:
   note: areas where a third party was DETECTED serving this provider; an area absent here was either self-run or not observed, and this script
     cannot tell those apart
 checked:
-- 'docs-platform: custom'
+- 'docs-platform: not probed'
 - bestprintondemand.co (APIReference)
 - bestprintondemand.co (Website)
 - bestprintondemand.co (Documentation)
 - bestprintondemand.co (baseURL)
+- bestprintondemand.co (mcp)

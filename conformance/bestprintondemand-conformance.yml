@@ -1,23 +1,23 @@
-generated: '2026-10-06'
+generated: '2026-10-12'
 method: derived
 generator: derive-conformance.py
-source: openapi/ (1 document(s), 8 mutating operations)
+source: openapi/ (1 document(s), 0 mutating operations)
 standards:
-- id: openapi-3.1
+- id: openapi-3.2
   conforms: true
-  evidence: the document declares 3.1.0
+  evidence: the document declares 3.2.0
 - id: oauth2
   conforms: false
-  evidence: 'securitySchemes: apiKeyHeader (apiKey), bearerAuth (http)'
+  evidence: no securitySchemes declared
 - id: rfc9457
   conforms: false
   evidence: no response declares application/problem+json
 - id: idempotency
-  conforms: true
-  evidence: Idempotency-Key declared on 1 of 8 mutating operations (partial)
+  conforms: false
+  evidence: no idempotency key parameter on mutating operations
 - id: pagination
   conforms: true
-  evidence: list operations take limit, page
+  evidence: list operations take limit
 - id: ratelimit-headers
   conforms: true
   evidence: responses declare Retry-After

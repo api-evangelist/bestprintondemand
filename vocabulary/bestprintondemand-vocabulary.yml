@@ -1,89 +1,25 @@
-generated: '2026-10-06'
+generated: '2026-10-12'
 method: derived
 generator: derive-vocabulary.py
-source: openapi/bestprintondemand-openapi.json
+source: openapi/bestprintondemand-print-on-demand-costs-api-openapi.yml
 vocabulary:
   name: BestPrintOnDemand Domain Vocabulary
   description: 'Terms declared by BestPrintOnDemand''s own API contract: its resource groups, objects and enumerations, with the contract''s definitions.
     Derived, not authored.'
-  version: '2026-10-06'
+  version: '2026-10-12'
   terms:
-  - term: Gender
-    definition: Name, email and username lookups.
+  - term: Print-on-demand costs
+    definition: Every answer the site gives about what printing and shipping a product costs.
     tags:
     - Resource Group
-    source: openapi/bestprintondemand-openapi.json
-  - term: Account
-    definition: Credit balance and key status.
+    source: openapi/bestprintondemand-print-on-demand-costs-api-openapi.yml
+  - term: Answer
+    definition: The tool's answer as data. Each operation's example shows its fields.
     tags:
-    - Resource Group
-    source: openapi/bestprintondemand-openapi.json
-  - term: Batches
-    definition: Upload a CSV or XLSX file and download it back with gender columns added.
-    tags:
-    - Resource Group
-    source: openapi/bestprintondemand-openapi.json
-  - term: Webhooks
-    definition: Requests NameGender sends to your server when a file job finishes or credits run low.
-    tags:
-    - Resource Group
-    source: openapi/bestprintondemand-openapi.json
+    - Object
+    source: openapi/bestprintondemand-print-on-demand-costs-api-openapi.yml#/components/schemas/Answer
   - term: Error
-    definition: The one error shape. Returned by every endpoint at every failing status code.
+    definition: Why the request could not be answered, with what helps the next request (the candidate products, the valid sales channels or suppliers).
     tags:
     - Object
-    source: openapi/bestprintondemand-openapi.json#/components/schemas/Error
-  - term: GenderResult
-    definition: 'Object declared by the contract with fields: query, name, first_name, middle_name, last_name, name_type, gender, probability,
-      sample_size, country, took_ms, source. (2 more)'
-    tags:
-    - Object
-    source: openapi/bestprintondemand-openapi.json#/components/schemas/GenderResult
-  - term: Envelope
-    definition: 'Object declared by the contract with fields: credits_charged, credits_remaining, data_version, request_id.'
-    tags:
-    - Object
-    source: openapi/bestprintondemand-openapi.json#/components/schemas/Envelope
-  - term: BulkRequest
-    definition: 'Object declared by the contract with fields: names, country, locale, ip, type, ai_fallback, best_guess.'
-    tags:
-    - Object
-    source: openapi/bestprintondemand-openapi.json#/components/schemas/BulkRequest
-  - term: CountriesResponse
-    definition: Two lists, deliberately not merged. `registrations` is measured volume and is comparable only among countries that publish counts.
-      `attested_in` is presence, with no weight attached — a country appears there whether or not anyone counted it.
-    tags:
-    - Object
-    source: openapi/bestprintondemand-openapi.json#/components/schemas/CountriesResponse
-  - term: AccountResponse
-    definition: 'Object declared by the contract with fields: email, credits_remaining, purchased_credits, free_today, free_daily_limit, lifetime_requests,
-      data_version.'
-    tags:
-    - Object
-    source: openapi/bestprintondemand-openapi.json#/components/schemas/AccountResponse
-  - term: BatchJob
-    definition: 'Object declared by the contract with fields: id, status, source, file, columns, options, rows, progress, credits, summary, data_version,
-      error. (7 more)'
-    tags:
-    - Object
-    source: openapi/bestprintondemand-openapi.json#/components/schemas/BatchJob
-  - term: BatchList
-    definition: 'Object declared by the contract with fields: data, page, per_page, total, has_more.'
-    tags:
-    - Object
-    source: openapi/bestprintondemand-openapi.json#/components/schemas/BatchList
-  - term: WebhookEvent
-    definition: Envelope of every webhook request. The raw body is what the signature covers.
-    tags:
-    - Object
-    source: openapi/bestprintondemand-openapi.json#/components/schemas/WebhookEvent
-  - term: CreditsAlert
-    definition: 'Object declared by the contract with fields: kind, credits_remaining, purchased, subscription, daily_burn, runway_days, since.'
-    tags:
-    - Object
-    source: openapi/bestprintondemand-openapi.json#/components/schemas/CreditsAlert
-  - term: WebhookTestObject
-    definition: 'Object declared by the contract with fields: message.'
-    tags:
-    - Object
-    source: openapi/bestprintondemand-openapi.json#/components/schemas/WebhookTestObject
+    source: openapi/bestprintondemand-print-on-demand-costs-api-openapi.yml#/components/schemas/Error

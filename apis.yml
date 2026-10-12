@@ -12,7 +12,7 @@ x-tier: profiled
 x-tier-reason: enrichment pass 2026-10-06 (modular-v1; was harvest)
 specificationVersion: '0.20'
 created: '2026-10-06'
-modified: '2026-10-06'
+modified: '2026-10-12'
 tags:
 - Company
 - API
@@ -33,20 +33,14 @@ common:
   url: json-ld/bestprintondemand-context.jsonld
 - type: Vocabulary
   url: vocabulary/bestprintondemand-vocabulary.yml
-- type: AgentSkill
-  url: skills/_index.yml
-- type: Webhooks
-  url: asyncapi/bestprintondemand-webhooks.yml
 - type: DataModel
   url: data-model/bestprintondemand-data-model.yml
-- type: Idempotency
-  url: conventions/bestprintondemand-conventions.yml
-- type: Conventions
-  url: conventions/bestprintondemand-conventions.yml
 - type: ErrorCatalog
   url: errors/bestprintondemand-problem-types.yml
 - type: Conformance
   url: conformance/bestprintondemand-conformance.yml
+- type: Pricing
+  url: https://bestprintondemand.co/price-changes
 - type: LLMsTxt
   url: llms/bestprintondemand-llms.txt
 - type: Hosts
@@ -61,103 +55,34 @@ common:
   url: https://bestprintondemand.co/blog
 - type: APIReference
   url: https://bestprintondemand.co/data
-- type: Authentication
-  url: authentication/bestprintondemand-authentication.yml
 - type: DomainSecurity
   url: security/bestprintondemand-domain-security.yml
 - type: Website
   url: https://bestprintondemand.co
 - type: Documentation
   url: https://bestprintondemand.co/data#api
+- type: APIsJSON
+  url: https://bestprintondemand.co/apis.json
+- type: MCPServer
+  url: mcp/bestprintondemand-mcp.yml
+- type: OpenAPI
+  url: https://bestprintondemand.co/openapi.json
 apis:
-- aid: bestprintondemand:bestprintondemand-account-api
-  name: BestPrintOnDemand Account API
-  description: Credit balance and key status.
+- aid: bestprintondemand:bestprintondemand-print-on-demand-costs-api
+  name: BestPrintOnDemand API
+  description: Find print-on-demand products, get every supplier's base price, US shipping and total for one product (with profit at a sell price
+    after a sales channel's fees), compare two suppliers, and list attributed price changes. Plain GET requests, JSON answers, no key.
   humanURL: https://bestprintondemand.co/data#api
   baseURL: https://bestprintondemand.co/api/v1
   tags:
-  - Account
+  - Print-on-demand costs
   properties:
   - type: OpenAPI
-    url: openapi/bestprintondemand-account-api-openapi.yml
+    url: openapi/bestprintondemand-print-on-demand-costs-api-openapi.yml
+  - type: Documentation
+    url: https://bestprintondemand.co/data#api
   - type: JSONSchema
-    url: json-schema/bestprintondemand-countries-response-schema.json
-  - type: JSONSchema
-    url: json-schema/bestprintondemand-batch-job-schema.json
-  - type: JSONSchema
-    url: json-schema/bestprintondemand-bulk-request-schema.json
-  - type: JSONSchema
-    url: json-schema/bestprintondemand-bulk-response-schema.json
-  - type: JSONSchema
-    url: json-schema/bestprintondemand-account-response-schema.json
-  - type: JSONSchema
-    url: json-schema/bestprintondemand-single-response-schema.json
-- aid: bestprintondemand:bestprintondemand-batches-api
-  name: BestPrintOnDemand Batches API
-  description: Upload a CSV or XLSX file and download it back with gender columns added.
-  humanURL: https://bestprintondemand.co/data#api
-  baseURL: https://bestprintondemand.co/api/v1
-  tags:
-  - Batches
-  properties:
-  - type: OpenAPI
-    url: openapi/bestprintondemand-batches-api-openapi.yml
-  - type: JSONSchema
-    url: json-schema/bestprintondemand-countries-response-schema.json
-  - type: JSONSchema
-    url: json-schema/bestprintondemand-batch-job-schema.json
-  - type: JSONSchema
-    url: json-schema/bestprintondemand-bulk-request-schema.json
-  - type: JSONSchema
-    url: json-schema/bestprintondemand-bulk-response-schema.json
-  - type: JSONSchema
-    url: json-schema/bestprintondemand-account-response-schema.json
-  - type: JSONSchema
-    url: json-schema/bestprintondemand-single-response-schema.json
-- aid: bestprintondemand:bestprintondemand-gender-api
-  name: BestPrintOnDemand Gender API
-  description: Name, email and username lookups.
-  humanURL: https://bestprintondemand.co/data#api
-  baseURL: https://bestprintondemand.co/api/v1
-  tags:
-  - Gender
-  properties:
-  - type: OpenAPI
-    url: openapi/bestprintondemand-gender-api-openapi.yml
-  - type: JSONSchema
-    url: json-schema/bestprintondemand-countries-response-schema.json
-  - type: JSONSchema
-    url: json-schema/bestprintondemand-batch-job-schema.json
-  - type: JSONSchema
-    url: json-schema/bestprintondemand-bulk-request-schema.json
-  - type: JSONSchema
-    url: json-schema/bestprintondemand-bulk-response-schema.json
-  - type: JSONSchema
-    url: json-schema/bestprintondemand-account-response-schema.json
-  - type: JSONSchema
-    url: json-schema/bestprintondemand-single-response-schema.json
-- aid: bestprintondemand:bestprintondemand-webhooks-api
-  name: BestPrintOnDemand Webhooks API
-  description: Requests NameGender sends to your server when a file job finishes or credits run low.
-  humanURL: https://bestprintondemand.co/data#api
-  baseURL: https://bestprintondemand.co/api/v1
-  tags:
-  - Webhooks
-  properties:
-  - type: OpenAPI
-    url: openapi/bestprintondemand-webhooks-api-openapi.yml
-  - type: JSONSchema
-    url: json-schema/bestprintondemand-countries-response-schema.json
-  - type: JSONSchema
-    url: json-schema/bestprintondemand-batch-job-schema.json
-  - type: JSONSchema
-    url: json-schema/bestprintondemand-bulk-request-schema.json
-  - type: JSONSchema
-    url: json-schema/bestprintondemand-bulk-response-schema.json
-  - type: JSONSchema
-    url: json-schema/bestprintondemand-account-response-schema.json
-  - type: JSONSchema
-    url: json-schema/bestprintondemand-single-response-schema.json
+    url: json-schema/bestprintondemand-answer-schema.json
 x-submission-notes: 'Reconsidered by Kin 2026-10-06: now a live keyless JSON API (/api/v1: products, costs, compare), OpenAPI 3.2 /openapi.json,
   apis.json, remote MCP /mcp (registry co.bestprintondemand/print-on-demand-costs). Data: POD supplier prices (Printful/Printify/Gelato) with
   source+date.'
@@ -169,3 +94,8 @@ x-enrichment:
   artifacts_added: 26
   pass: modular-v1
   engine: identity=local,contract=local,surfaces=local,docs=local,regulatory=local
+x-correction:
+  date: '2026-10-12'
+  by: hello@bestprintondemand.co (email reply)
+  note: Removed NameGender's contracts, AsyncAPI, JSON Schemas and every artifact derived from them (cross-provider contamination in the 2026-10-06
+    profiling batch); replaced with the provider's own OpenAPI 3.2.1, apis.json and MCP server.
