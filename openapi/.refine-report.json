@@ -1,19 +1,20 @@
 {
   "provider": "bestprintondemand",
   "sources": [
-    "bestprintondemand-openapi.json"
+    "_original/bestprintondemand-openapi.json"
   ],
   "outputs": [
     "bestprintondemand-print-on-demand-costs-api-openapi.yml"
   ],
-  "archived": [
-    "archived openapi/bestprintondemand-openapi.json"
-  ],
+  "archived": [],
   "errors": [],
   "warnings": [],
   "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
     "bestprintondemand-openapi.json: upgraded openapi 3.2.1 -> OpenAPI 3.2.0",
-    "apis.yml register: written (+1 apis, 1 total)"
+    "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "bestprintondemand-print-on-demand-costs-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
