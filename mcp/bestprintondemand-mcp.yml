@@ -23,12 +23,26 @@ deployment:
   verified: probed
 tools:
 - name: find_products
+  description: Search the catalog of print-on-demand products (t-shirts, hoodies, mugs, posters, stickers,
+    phone cases, tote bags and more, or a blank such as Bella+Canvas 3001). Returns each match's slug,
+    its lowest listed US total and supplier, and its page.
   title: Find print-on-demand products
 - name: get_product_costs
+  description: 'Every supplier''s listed US cost for one print-on-demand product: base price, first-item
+    shipping and total, each with its source and date, cheapest first, plus the site''s one-sentence answer
+    on which supplier is cheapest like for like. Give sell_price (and optionally a sales channel) to get
+    each supplier''s profit after fees.'
   title: Get a product's costs by supplier
 - name: compare_suppliers
+  description: Which of two suppliers (e.g. Printful and Printify) has the lower listed US total across
+    the products both offer, matched on product, print method and blank, with the record by category and
+    the largest gaps.
   title: Compare two print-on-demand suppliers
 - name: get_price_changes
+  description: 'The price changes the site''s hourly readings of Printful, Printify and Gelato attribute
+    to the supplier: supplier-wide changes (many products moving by the same percentage or amount, each
+    product''s price before and after) and changes to one product''s own price. Name a supplier to narrow
+    it, or a product for its price history at each supplier.'
   title: Get print-on-demand price changes
 tool_quality:
   tool_count: 4
@@ -55,3 +69,4 @@ tool_quality:
   scored: false
   note: Facts from the saved tools/list capture (mcp_tool_quality.py); recorded, not scored. Checks learned
     from Glimind's agent-readiness audit.
+tools_count: 4
