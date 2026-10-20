@@ -1,0 +1,152 @@
+{
+  "endpoint": "https://bestprintondemand.co/mcp",
+  "captured": "2026-10-20",
+  "method": "initialize + tools/list (anonymous, no tool called; roadmap#992)",
+  "protocol_version": "2025-06-18",
+  "server_info": {
+    "name": "bestprintondemand",
+    "title": "BestPrintOnDemand",
+    "version": "1.0.0",
+    "websiteUrl": "https://bestprintondemand.co"
+  },
+  "result": {
+    "tools": [
+      {
+        "name": "find_products",
+        "title": "Find print-on-demand products",
+        "description": "Search the catalog of print-on-demand products (t-shirts, hoodies, mugs, posters, stickers, phone cases, tote bags and more, or a blank such as Bella+Canvas 3001). Returns each match's slug, its lowest listed US total and supplier, and its page.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120,
+              "description": "Product type or blank, e.g. \"hoodie\", \"11oz mug\", \"Bella+Canvas 3001\"."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 25,
+              "description": "Most results to return (default 10)."
+            }
+          },
+          "required": [
+            "query"
+          ],
+          "additionalProperties": false
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        }
+      },
+      {
+        "name": "get_product_costs",
+        "title": "Get a product's costs by supplier",
+        "description": "Every supplier's listed US cost for one print-on-demand product: base price, first-item shipping and total, each with its source and date, cheapest first, plus the site's one-sentence answer on which supplier is cheapest like for like. Give sell_price (and optionally a sales channel) to get each supplier's profit after fees.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "product": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120,
+              "description": "Product slug from find_products (e.g. \"unisex-tee\") or its name."
+            },
+            "sell_price": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 100000,
+              "description": "Your sell price in USD, to compute profit per supplier."
+            },
+            "channel": {
+              "type": "string",
+              "maxLength": 40,
+              "description": "Sales channel whose fees to subtract: etsy, shopify-own, woocommerce, tiktok-shop, walmart, ebay or amazon-seller."
+            },
+            "buyer_pays_shipping": {
+              "type": "boolean",
+              "description": "True when the buyer pays shipping on top of the sell price (default false: you cover shipping)."
+            }
+          },
+          "required": [
+            "product"
+          ],
+          "additionalProperties": false
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        }
+      },
+      {
+        "name": "compare_suppliers",
+        "title": "Compare two print-on-demand suppliers",
+        "description": "Which of two suppliers (e.g. Printful and Printify) has the lower listed US total across the products both offer, matched on product, print method and blank, with the record by category and the largest gaps.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "supplier_a": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 60,
+              "description": "A supplier name or slug, e.g. \"Printful\"."
+            },
+            "supplier_b": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 60,
+              "description": "Another supplier, e.g. \"Printify\"."
+            }
+          },
+          "required": [
+            "supplier_a",
+            "supplier_b"
+          ],
+          "additionalProperties": false
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        }
+      },
+      {
+        "name": "get_price_changes",
+        "title": "Get print-on-demand price changes",
+        "description": "The price changes the site's hourly readings of Printful, Printify and Gelato attribute to the supplier: supplier-wide changes (many products moving by the same percentage or amount, each product's price before and after) and changes to one product's own price. Name a supplier to narrow it, or a product for its price history at each supplier.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "supplier": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 60,
+              "description": "Only this supplier's changes, e.g. \"Printful\"."
+            },
+            "product": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120,
+              "description": "Product slug or name (e.g. \"unisex-tee\"), for its price history at each supplier."
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        }
+      }
+    ]
+  }
+}

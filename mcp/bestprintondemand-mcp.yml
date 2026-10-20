@@ -2,9 +2,10 @@ generated: '2026-10-12'
 method: probed
 source: https://bestprintondemand.co/mcp
 status: live
-description: BestPrintOnDemand serves a remote Model Context Protocol server (Streamable HTTP) on its own host, listed in the official MCP Registry
-  as co.bestprintondemand/print-on-demand-costs. No key or account; it answers the same four questions as the REST API (find products, a product's
-  costs, compare suppliers, price changes).
+description: BestPrintOnDemand serves a remote Model Context Protocol server (Streamable HTTP) on its
+  own host, listed in the official MCP Registry as co.bestprintondemand/print-on-demand-costs. No key
+  or account; it answers the same four questions as the REST API (find products, a product's costs, compare
+  suppliers, price changes).
 servers:
 - name: print-on-demand-costs
   url: https://bestprintondemand.co/mcp
@@ -29,3 +30,28 @@ tools:
   title: Compare two print-on-demand suppliers
 - name: get_price_changes
   title: Get print-on-demand price changes
+tool_quality:
+  tool_count: 4
+  tokens_total: 903
+  tokens_per_tool_median: 205
+  heavy_tools: []
+  heavy_tool_count: 0
+  params_total: 10
+  params_undescribed: 0
+  params_described_pct: 100.0
+  tools_with_undescribed_params: 0
+  tools_annotated: 4
+  annotated_pct: 100.0
+  state_changing_unhinted: []
+  tools_missing_schema: 0
+  short_descriptions: 0
+  duplicate_descriptions: 0
+  duplicate_names: 0
+  nonportable_names: []
+  output_schema_count: 0
+  token_estimate: chars/3.6 of each compact tool definition
+  source: mcp/bestprintondemand-mcp-tools.json
+  measured: '2026-10-20'
+  scored: false
+  note: Facts from the saved tools/list capture (mcp_tool_quality.py); recorded, not scored. Checks learned
+    from Glimind's agent-readiness audit.
