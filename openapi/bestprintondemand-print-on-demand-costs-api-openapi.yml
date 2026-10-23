@@ -829,3 +829,9 @@ components:
 externalDocs:
   description: Documentation, the dataset file and the MCP server
   url: https://bestprintondemand.co/data#api
+x-provenance:
+  method: harvested
+  publisher: BestPrintOnDemand
+  source: https://bestprintondemand.co/openapi.json
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)
